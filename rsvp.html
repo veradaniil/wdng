@@ -14,7 +14,7 @@ input[type="text"], input[type="email"], textarea, select { width: 100%; padding
 .radio-group { margin: 20px 0; }
 .hidden { display: none; }
 
-/* Общий вид чекбоксов и радиокнопок, синий цвет выбора [i]/
+/* Общий вид чекбоксов и радиокнопок */
 .checkbox-item { margin: 10px 0; display: flex; align-items: center; cursor: pointer; user-select: none; }
 .checkbox-item input {
 margin-right: 12px;
@@ -24,7 +24,7 @@ cursor: pointer;
 accent-color: #007bff;
 }
 
-/[/i] Кнопка отправки — как в оригинале: золотая, на всю ширину */
+/* Кнопка отправки — золотая, на всю ширину */
 .submit-btn {
 width: 100%;
 padding: 15px;
@@ -64,96 +64,106 @@ font-family: 'Playfair Display', serif;
 
 <div class="form-card">
 <h2>Ваш ответ</h2>
-<form id="rsvpForm" action="thanks.html">
-<label for="name">Ваше имя и фамилия *</label>
-<input type="text" id="name" required>
+<!-- ПОДКЛЮЧАЕМ СЕРВИС ОТПРАВКИ -->
+<form id="rsvpForm" action="https://web3forms.com" method="POST">
+  
+  <!-- ТВОЙ ЛИЧНЫЙ КЛЮЧ ОТ WEB3FORMS -->
+  <input type="hidden" name="access_key" value="c14e7dba-2ca8-4f21-958f-d7472bb31426">
+  
+  <!-- КУДА ПЕРЕНАПРАВИТЬ ГОСТЯ ПОСЛЕ ОТПРАВКИ -->
+  <input type="hidden" id="redirectUrl" name="redirect" value="https://github.io">
 
-<div class="radio-group">
-<label>Вы сможете присутствовать?</label>
-<div class="checkbox-item"><input type="radio" name="attendance" value="yes" onclick="toggleExtra(true)" required><span>Да, мы будем!</span></div>
-<div class="checkbox-item"><input type="radio" name="attendance" value="yes" onclick="toggleExtra(true)" required><span>Да, мы будем, но только к ресторану!</span></div>
-<div class="checkbox-item"><input type="radio" name="attendance" value="no" onclick="toggleExtra(false)"><span>К сожалению, нет.</span></div>
-</div>
+  <label for="name">Ваше имя и фамилия *</label>
+  <input type="text" id="name" name="Имя и Фамилия гостя" required>
 
-<!-- Поля для тех, кто НЕ может прийти -->
-<div id="no-field" class="hidden">
-<label>Напишите пару теплых слов:</label>
-<textarea rows="3"></textarea>
-</div>
+  <div class="radio-group">
+  <label>Вы сможете присутствовать?</label>
+  <div class="checkbox-item"><input type="radio" name="Присутствие" value="Да, мы будем!" onclick="toggleExtra(true)" required><span>Да, мы будем!</span></div>
+  <div class="checkbox-item"><input type="radio" name="Присутствие" value="Да, мы будем, но только к ресторану!" onclick="toggleExtra(true)" required><span>Да, мы будем, но только к ресторану!</span></div>
+  <div class="checkbox-item"><input type="radio" name="Присутствие" value="К сожалению, нет." onclick="toggleExtra(false)"><span>К сожалению, нет.</span></div>
+  </div>
 
-<!-- Дополнительные вопросы для тех, кто ПРИДЕТ -->
-<div id="extra-fields" class="hidden">
+  <!-- Поля для тех, кто НЕ может прийти -->
+  <div id="no-field" class="hidden">
+  <label>Напишите пару теплых слов:</label>
+  <textarea name="Пожелания / Теплые слова" rows="3"></textarea>
+  </div>
 
-<label>Выберите горячее блюдо:</label>
-<div class="checkbox-item"><input type="radio" name="food" value="salmon"><span>Морской окунь с картофельным пюре и соусом из печёного перца</span></div>
-<div class="checkbox-item"><input type="radio" name="food" value="duck"><span>Куриный шашлык с печёными овощами и томатным соусом</span></div>
+  <!-- Дополнительные вопросы для тех, кто ПРИДЕТ -->
+  <div id="extra-fields" class="hidden">
 
-<!-- ВОПРОС ПРО ДЕТЕЙ -->
-<div class="radio-group">
-<label>Будете ли Вы с детьми?</label>
-<div class="checkbox-item"><input type="radio" name="withKids" value="yes" onclick="toggleKids(true)"><span>Да</span></div>
-<div class="checkbox-item"><input type="radio" name="withKids" value="no" onclick="toggleKids(false)" checked><span>Нет</span></div>
-</div>
+  <label>Выберите горячее блюдо:</label>
+  <div class="checkbox-item"><input type="radio" name="Горячее блюдо" value="Морской окунь с картофельным пюре"><span>Морской окунь с картофельным пюре и соусом из печёного перца</span></div>
+  <div class="checkbox-item"><input type="radio" name="Горячее блюдо" value="Куриный шашлык с печёными овощами"><span>Куриный шашлык с печёными овощами и томатным соусом</span></div>
 
-<!-- ДЕТСКОЕ МЕНЮ -->
-<div id="kids-menu-section" class="hidden">
-<label>Детское меню</label>
-<div class="form-hint">(Можно выбрать несколько вариантов)</div>
-<label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="olivier"><span>Оливье с курицей</span></label>
-<label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="soup"><span>Детский куриный бульон</span></label>
-<label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="borsch"><span>Борщ с курицей</span></label>
-<label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="pasta"><span>Макароны с сыром</span></label>
-<label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="turkey_shashlik"><span>Детский шашлык из индейки</span></label>
-<label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="cutlet"><span>Домашняя котлета из индейки с пюре и овощами</span></label>
-<label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="nuggets"><span>Наггетсы с картофелем фри</span></label>
-</div>
+  <!-- ВОПРОС ПРО ДЕТЕЙ -->
+  <div class="radio-group">
+  <label>Будете ли Вы с детьми?</label>
+  <div class="checkbox-item"><input type="radio" name="Будут ли дети" value="Да" onclick="toggleKids(true)"><span>Да</span></div>
+  <div class="checkbox-item"><input type="radio" name="Будут ли дети" value="Нет" onclick="toggleKids(false)" checked><span>Нет</span></div>
+  </div>
 
-<div class="section-divider"></div>
+  <!-- ДЕТСКОЕ МЕНЮ -->
+  <div id="kids-menu-section" class="hidden">
+  <label>Детское меню</label>
+  <div class="form-hint">(Можно выбрать несколько вариантов)</div>
+  <label class="checkbox-item"><input type="checkbox" name="Детское меню[]" value="Оливье с курицей"><span>Оливье с курицей</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Детское меню[]" value="Детский куриный бульон"><span>Детский куриный бульон</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Детское меню[]" value="Борщ с курицей"><span>Борщ с курицей</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Детское меню[]" value="Макароны с сыром"><span>Макароны с сыром</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Детское меню[]" value="Детский шашлык из индейки"><span>Детский шашлык из индейки</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Детское меню[]" value="Домашняя котлета из индейки с пюре"><span>Домашняя котлета из индейки с пюре и овощами</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Детское меню[]" value="Наггетсы с картофелем фри"><span>Наггетсы с картофелем фри</span></label>
+  </div>
 
-<label>Какой алкоголь вы предпочитаете?</label>
-<div class="form-hint">(Можно выбрать несколько вариантов)</div>
-<label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="whiskey"><span>Виски</span></label>
-<label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="vodka"><span>Водка</span></label>
-<label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="white_wine"><span>Вино белое</span></label>
-<label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="red_wine"><span>Вино красное</span></label>
-<label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="champagne"><span>Шампанское</span></label>
-<label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="noAlco"><span>Я не пью алкоголь</span></label>
+  <div class="section-divider"></div>
 
-<!-- ПРИМЕЧАНИЕ ПРО ЦВЕТЫ -->
-<div class="note-box">
-<strong>Маленькое пожелание</strong>
-Уважаемые гости, мы просим Вас воздержаться от покупки цветочных букетов. По одному букету могут подарить только семья жениха и/или невесты, спасибо! :)
-</div>
-</div> <!-- Конец extra-fields -->
+  <label>Какой алкоголь вы предпочитаете?</label>
+  <div class="form-hint">(Можно выбрать несколько вариантов)</div>
+  <label class="checkbox-item"><input type="checkbox" name="Алкоголь[]" value="Виски"><span>Виски</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Алкоголь[]" value="Водка"><span>Водка</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Алкоголь[]" value="Вино белое"><span>Вино белое</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Алкоголь[]" value="Вино красное"><span>Вино красное</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Алкоголь[]" value="Шампанское"><span>Шампанское</span></label>
+  <label class="checkbox-item"><input type="checkbox" name="Алкоголь[]" value="Не пью алкоголь"><span>Я не пью алкоголь</span></label>
 
-<button type="submit" class="submit-btn">Отправить ответ</button>
+  <!-- ПРИМЕЧАНИЕ ПРО ЦВЕТЫ -->
+  <div class="note-box">
+  <strong>Маленькое пожелание</strong>
+  Уважаемые гости, мы просим Вас воздержаться от покупки цветочных букетов. По одному букету могут подарить только семья жениха и/или невесты, спасибо! :)
+  </div>
+  </div> <!-- Конец extra-fields -->
+
+  <button type="submit" class="submit-btn">Отправить ответ</button>
 </form>
 </div>
 
 <script>
 function toggleExtra(isPresent) {
-const extraFields = document.getElementById('extra-fields');
-const noField = document.getElementById('no-field');
-const form = document.getElementById('rsvpForm');
+  const extraFields = document.getElementById('extra-fields');
+  const noField = document.getElementById('no-field');
+  const redirectInput = document.getElementById('redirectUrl');
 
-if (isPresent) {
-extraFields.classList.remove('hidden');
-noField.classList.add('hidden');
-form.action = 'thanks.html';
-} else {
-extraFields.classList.add('hidden');
-noField.classList.remove('hidden');
-form.action = 'wish.html';
-}
+  if (isPresent) {
+    extraFields.classList.remove('hidden');
+    noField.classList.add('hidden');
+    // Если гость придет, после отправки открываем thanks.html
+    redirectInput.value = 'https://github.io';
+  } else {
+    extraFields.classList.add('hidden');
+    noField.classList.remove('hidden');
+    // Если гость НЕ придет, после отправки открываем wish.html
+    redirectInput.value = 'https://github.io';
+  }
 }
 
 function toggleKids(hasKids) {
-const kidsMenu = document.getElementById('kids-menu-section');
-if (hasKids) {
-kidsMenu.classList.remove('hidden');
-} else {
-kidsMenu.classList.add('hidden');
-}
+  const kidsMenu = document.getElementById('kids-menu-section');
+  if (hasKids) {
+    kidsMenu.classList.remove('hidden');
+  } else {
+    kidsMenu.classList.add('hidden');
+  }
 }
 </script>
 
