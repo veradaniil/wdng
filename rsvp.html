@@ -64,7 +64,8 @@ font-family: 'Playfair Display', serif;
 
 <div class="form-card">
 <h2>Ваш ответ</h2>
-<form id="rsvpForm" method="POST" onsubmit="return handleSubmit(event)">
+
+<form id="rsvpForm" action="https://api.web3forms.com/submit" method="POST" onsubmit="return handleSubmit(event)">
 
 <label for="name">Ваше имя и фамилия *</label>
 <input type="text" id="name" name="name" required>
@@ -133,58 +134,72 @@ font-family: 'Playfair Display', serif;
 
 <script>
 function toggleExtra(isPresent) {
-document.getElementById('extra-fields').classList.toggle('hidden', !isPresent);
-document.getElementById('no-field').classList.toggle('hidden', isPresent);
+var extra = document.getElementById('extra-fields');
+var no = document.getElementById('no-field');
+if (isPresent) {
+extra.classList.remove('hidden');
+no.classList.add('hidden');
+} else {
+extra.classList.add('hidden');
+no.classList.remove('hidden');
+}
 }
 
 function toggleKids(hasKids) {
-document.getElementById('kids-menu-section').classList.toggle('hidden', !hasKids);
-}
-
-async function handleSubmit(event) {
-event.preventDefault();
-
-const form = document.getElementById('rsvpForm');
-const formData = new FormData(form);
-const attendance = formData.get('attendance');
-
-// Соберём все поля в один объект (массивы типа kidsFood[]/alcohol[] — в списки)
-const payload = {};
-formData.forEach(function (value, key) {
-if (key.endsWith('[]')) {
-const clean = key.slice(0, -2);
-if (!payload[clean]) payload[clean] = [];
-payload[clean].push(value);
+var kids = document.getElementById('kids-menu-section');
+if (hasKids) {
+kids.classList.remove('hidden');
 } else {
-payload[key] = value;
+kids.classList.add('hidden');
+}
+}
+
+function handleSubmit(event) {
+if (event && event.preventDefault) event.preventDefault();
+
+var form = document.getElementById('rsvpForm');
+var formData = new FormData(form);
+var attendance = formData.get('attendance');
+
+// Собираем все поля формы в один объект (поля с [] превращаем в списки)
+var data = {};
+formData.forEach(function (value, key) {
+if (key.indexOf('[]', key.length - 2) !== -1) {
+var clean = key.slice(0, -2);
+if (!data[clean]) data[clean] = [];
+data[clean].push(value);
+} else {
+data[key] = value;
 }
 });
 
-// Обязательные параметры web3forms
-payload.access_key = 'c14e7dba-2ca8-4f21-958f-d7472bb31426';
-payload.subject = 'Новый ответ на приглашение (RSVP) — ' + (payload.name || 'имя не указано');
+// Служебные параметры web3forms
+data.access_key = 'c14e7dba-2ca8-4f21-958f-d7472bb31426';
+data.subject = 'Новый ответ на приглашение (RSVP)';
 
+// Отправляем через XMLHttpRequest (работает везде)
+var xhr = new XMLHttpRequest();
+xhr.open('POST', '[url=https://api.web3forms.com/submit]https://api.web3forms.com/submit[/url] true);
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.onreadystatechange = function () {
+if (xhr.readyState === 4) {
 try {
-const response = await fetch('[url=https://api.web3forms.com/submit]https://api.web3forms.com/submit[/url] {
-method: 'POST',
-headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-body: JSON.stringify(payload)
-});
-const result = await response.json();
-
-if (result.success) {
-// Гость приходит -> thanks.html, не приходит -> wish.html
+var result = JSON.parse(xhr.responseText);
+if (result && result.success) {
 if (attendance === 'no') {
 window.location.href = 'wish.html';
 } else {
 window.location.href = 'thanks.html';
 }
 } else {
-alert('Не удалось отправить ответ. Проверьте интернет и попробуйте ещё раз.');
+alert('Не удалось отправить ответ. Попробуйте ещё раз.');
 }
-} catch (error) {
-alert('Произошла ошибка отправки. Попробуйте ещё раз.');
+} catch (e) {
+alert('Ошибка отправки. Попробуйте ещё раз.');
 }
+}
+};
+xhr.send(JSON.stringify(data));
 
 return false;
 }
