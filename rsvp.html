@@ -17,8 +17,11 @@ input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px s
 
 /* Синие кружки/галочки выбора [i]/
 input[type="radio"], input[type="checkbox"] { accent-color: #007bff; }
-.att-radio { width: 20px; height: 20px; margin: 12px 8px 12px 0; vertical-align: middle; }
-.att-label { cursor: pointer; margin: 12px 0; }
+
+/[/i] Кнопки с текстом рядом — фикс: текст стоит справа от кружка [i]/
+.att-radio { display: inline-block; width: 20px; height: 20px; margin: 8px 8px 8px 0; vertical-align: middle; }
+.att-label { display: inline-block; cursor: pointer; margin: 8px 0; vertical-align: middle; }
+
 .group-title { font-weight: bold; margin: 22px 0 8px; color: #4a4a4a; }
 
 /[/i] Показ вопросов на чистом CSS — не требует скрипта */
@@ -73,7 +76,7 @@ font-family: 'Playfair Display', serif;
 
 <form action="https://api.web3forms.com/submit" method="POST">
 
-<!-- Ключ доступа прямо в HTML: без него web3forms отклонит форму -->
+<!-- Ключ доступа прямо в HTML -->
 <input type="hidden" name="access_key" value="c14e7dba-2ca8-4f21-958f-d7472bb31426">
 <input type="hidden" name="redirect" id="redirect_field" value="thanks.html">
 
@@ -148,7 +151,6 @@ font-family: 'Playfair Display', serif;
 
 <script>
 // Бонус: выбираем правильную страницу после отправки.
-// Если этот скрипт вдруг не выполнится — всё равно покажется thanks.html, и письмо уйдёт.
 function setRedirect(attendance) {
 var field = document.getElementById('redirect_field');
 if (attendance === 'no') {
