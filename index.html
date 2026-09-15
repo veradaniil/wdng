@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Даниил + Вера | Приглашение на свадьбу</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { margin: 0; font-family: 'Montserrat', sans-serif; background-color: #fdfaf6; color: #4a4a4a; text-align: center; }
+        
+        section { padding: 60px 20px; max-width: 800px; margin: auto; }
+        .info-block { margin-bottom: 40px; }
+        h2 { font-family: 'Playfair Display', serif; color: #d4af37; margin-top: 0; }
+        .details { font-size: 1.2em; line-height: 1.6; }
+        
+        /* Единая карточка для группы информации */
+        .info-card {
+            background-color: #f4f1ea;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+
+        /* Тонкая разделительная линия внутри карточки */
+        .card-divider {
+            border: 0;
+            border-top: 1px solid #e0dbcf;
+            margin: 30px 0;
+        }
+
+        .map-container { height: 300px; width: 100%; background: #eee; margin: 30px 0; border-radius: 10px; overflow: hidden; }
+        .map-container iframe { width: 100%; height: 100%; border: 0; }
+
+        .btn { display: inline-block; padding: 15px 40px; background-color: #d4af37; color: white; text-decoration: none; border-radius: 30px; font-weight: bold; transition: 0.3s; margin-top: 20px; }
+        .btn:hover { background-color: #b8962e; transform: translateY(-2px); }
+        
+        .wedding-photo-container { display: flex; justify-content: center; margin-bottom: 40px; }
+        .wedding-photo { width: 100%; max-width: 600px; height: auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+
+<section>
+    
+    <div class="info-block wedding-photo-container">
+        <img src="images/animeshka.jpg" alt="Свадебная иллюстрация" class="wedding-photo">
+    </div>
+    
+    <div class="info-block">
+        <h2>Уважаемые гости!</h2>
+        <p class="details">Мы рады сообщить Вам, что скоро состоится самый важный день<br>в нашей жизни — День Нашей свадьбы.<br> Будем рады разделить этот замечательный момент вместе с Вами!</p>
+    </div>
+
+    <div class="info-block">
+        <h2>Когда</h2>
+        <p class="details">Сбор гостей — 6 ноября 2026 года в 14:00<br>Торжественная церемония — 14:20<br>Ресторан — 16:00</p>
+    </div>
+
+    <div class="info-block">
+        <h2>Где</h2>
+        <p class="details"><strong style="color: #d4af37;">Церемония:</strong> ЗАГС Красносельского района, ул. Доблести 36</p>
+        <p class="details"><strong style="color: #d4af37;">Празднование:</strong> Ресторан БульВар, ул. Маршала Казакова 12, корпус 2</p>
+    </div>
+
+    <!-- ОБЪЕДИНЕННЫЙ БЛОК: Дресс-код + Дедлайн -->
+    <div class="info-card">
+        <div>
+            <h2>Дресс-код</h2>
+            <p>Классический, вечерний</p>
+            <p><small>Просьба избегать таких цветов, как: белый, коричневый</small></p>
+        </div>
+
+        <hr class="card-divider">
+
+        <div>
+            <h2>Подтвердите присутствие / отсутствие</h2>
+            <p class="details"> до 5 октября 2026</p>
+        </div>
+    </div>
+
+    <div class="info-block">
+        <h2>Церемония</h2>
+    </div>
+
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d32074.221442274236!2d30.11520666710261!3d59.83853013935807!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46963b9c916e1cd1%3A0x7bef55daee531944!2z0JfQkNCT0KE!5e0!3m2!1sru!2sru!4v1787326063004!5m2!1sru!2sru" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+
+    <div class="info-block">
+        <h2>Ресторан</h2>
+    </div>
+
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2003.4000858567606!2d30.236460677407184!3d59.859102668502466!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46963af62ffac8e7%3A0xfa77c687ea74b05a!2z0JHRg9C70YzQktCw0YA!5e0!3m2!1sru!2sru!4v1787326304013!5m2!1sru!2sru" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+
+    <a href="rsvp.html" class="btn">Подтвердить присутствие</a>
+</section>
+
+</body>
+</html>
