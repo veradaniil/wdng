@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RSVP | Подтверждение</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://googleapis.com" rel="stylesheet">
 <style>
 body { font-family: 'Montserrat', sans-serif; background-color: #fdfaf6; color: #4a4a4a; padding: 40px 20px; }
 .form-card { max-width: 500px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
@@ -64,13 +64,14 @@ font-family: 'Playfair Display', serif;
 
 <div class="form-card">
 <h2>Ваш ответ</h2>
-<!-- ПОДКЛЮЧАЕМ СЕРВИС ОТПРАВКИ -->
-<form id="rsvpForm" action="https://api.web3forms.com/submit" method="POST">
-  
-  <!-- ТВОЙ ЛИЧНЫЙ КЛЮЧ ОТ WEB3FORMS -->
+
+<!-- АДРЕС ОТПРАВКИ ИСПРАВЛЕН НА API -->
+<form id="rsvpForm" action="https://web3forms.com" method="POST">
+
+  <!-- СЕКРЕТНЫЙ КЛЮЧ ДЛЯ ВАШЕЙ ПОЧТЫ -->
   <input type="hidden" name="access_key" value="c14e7dba-2ca8-4f21-958f-d7472bb31426">
-  
-  <!-- КУДА ПЕРЕНАПРАВИТЬ ГОСТЯ ПОСЛЕ ОТПРАВКИ -->
+
+  <!-- НЕВИДИМЫЙ РЕДИРЕКТ НА СТРАНИЦУ СПАСИБО -->
   <input type="hidden" id="redirectUrl" name="redirect" value="https://github.io">
 
   <label for="name">Ваше имя и фамилия *</label>
@@ -138,6 +139,7 @@ font-family: 'Playfair Display', serif;
 </form>
 </div>
 
+<!-- ИСПРАВЛЕННЫЙ СКРИПТ ПЕРЕКЛЮЧЕНИЯ СТРАНИЦ -->
 <script>
 function toggleExtra(isPresent) {
   const extraFields = document.getElementById('extra-fields');
@@ -147,13 +149,11 @@ function toggleExtra(isPresent) {
   if (isPresent) {
     extraFields.classList.remove('hidden');
     noField.classList.add('hidden');
-    // Если гость придет, после отправки открываем thanks.html
-    redirectInput.value = 'https://github.io';
+    if (redirectInput) redirectInput.value = 'https://github.io';
   } else {
     extraFields.classList.add('hidden');
     noField.classList.remove('hidden');
-    // Если гость НЕ придет, после отправки открываем wish.html
-    redirectInput.value = 'https://github.io';
+    if (redirectInput) redirectInput.value = 'https://github.io';
   }
 }
 
