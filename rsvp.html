@@ -4,118 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RSVP | Подтверждение</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 body { font-family: 'Montserrat', sans-serif; background-color: #fdfaf6; color: #4a4a4a; padding: 40px 20px; }
 .form-card { max-width: 500px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-h2 { font-family: 'Playfair Display', serif; text-align: center; color: #d4af37; margin-top: 0; }
-label { display: block; margin-top: 20px; margin-bottom: 5px; font-weight: bold; }
-input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+h2 { font-family: 'Playfair Display', serif; text-align: center; color: #d4af37; }
 
-.radio-group { margin: 10px 0; }
+/* ВОПРОСЫ — ЖИРНЫЕ, варианты — ОБЫЧНЫЕ */
+label { display: block; margin-top: 12px; margin-bottom: 5px; font-weight: 400; }
+.group-title { font-weight: 700; margin-top: 20px; }
+.checkbox-item { margin: 8px 0; display: flex; align-items: center; cursor: pointer; user-select: none; font-weight: 400; }
+.checkbox-item span { font-weight: 400; }
+
+input[type="text"], input[type="email"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+.radio-group { margin: 20px 0; }
 .hidden { display: none; }
 
-/* Синие кружки/галочки выбора [i]/
-input[type="radio"], input[type="checkbox"] { accent-color: #007bff; }
+.checkbox-item input { margin-right: 12px; width: 20px; height: 20px; cursor: pointer; accent-color: #007bff; }
 
-/[/i] Кнопки с текстом рядом — фикс: текст стоит справа от кружка [i]/
-.att-radio { display: inline-block; width: 20px; height: 20px; margin: 8px 8px 8px 0; vertical-align: middle; }
-.att-label { display: inline-block; cursor: pointer; margin: 8px 0; vertical-align: middle; }
-
-.group-title { font-weight: bold; margin: 22px 0 8px; color: #4a4a4a; }
-
-/[/i] Показ вопросов на чистом CSS — не требует скрипта */
-#no-field, #extra-fields, #kids-menu-section { display: none; }
-#att-no:checked ~ #no-field { display: block; }
-#att-yes:checked ~ #extra-fields,
-#att-rest:checked ~ #extra-fields { display: block; }
-#kids-yes:checked ~ #kids-menu-section { display: block; }
-
-.checkbox-item { margin: 10px 0; display: flex; align-items: center; cursor: pointer; user-select: none; }
-.checkbox-item input { margin-right: 12px; width: 20px; height: 20px; cursor: pointer; }
-
-.submit-btn {
-width: 100%;
-padding: 15px;
-background-color: #d4af37;
-color: white;
-border: none;
-border-radius: 8px;
-cursor: pointer;
-font-size: 1em;
-margin-top: 30px;
-}
+.submit-btn { width: 100%; padding: 15px; background-color: #d4af37; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; margin-top: 30px; }
 .submit-btn:hover { background-color: #b8962e; }
 
 .form-hint { font-size: 0.85em; color: #888; font-weight: normal; margin-top: -3px; margin-bottom: 10px; }
-.section-divider { border-top: 1px solid #eee; margin-top: 30px; padding-top: 20px; }
 
-.note-box {
-margin-top: 30px;
-padding: 20px;
-background-color: #fdf8ed;
-border-left: 4px solid #d4af37;
-border-radius: 8px;
-font-size: 0.9em;
-line-height: 1.5;
-text-align: left;
-color: #666;
-}
-.note-box strong {
-display: block;
-color: #d4af37;
-margin-bottom: 5px;
-font-family: 'Playfair Display', serif;
-}
+.note-box { margin-top: 30px; padding: 20px; background-color: #fdf8ed; border-left: 4px solid #d4af37; border-radius: 8px; font-size: 0.9em; line-height: 1.5; text-align: left; color: #666; }
+.note-box strong { display: block; color: #d4af37; margin-bottom: 5px; font-family: 'Playfair Display', serif; }
+
+/* ПОКАЗ/СКРЫТИЕ БЛОКОВ — чистый CSS, без JS */
+#no-field, #extra-fields, #kids-menu-section { display: none; }
+#rsvpForm:has(#att-no:checked) #no-field { display: block; }
+#rsvpForm:has(#att-yes:checked) #extra-fields,
+#rsvpForm:has(#att-rest:checked) #extra-fields { display: block; }
+#rsvpForm:has(#kids-yes:checked) #kids-menu-section { display: block; }
 </style>
 </head>
 <body>
 
 <div class="form-card">
 <h2>Ваш ответ</h2>
-
-<form action="https://api.web3forms.com/submit" method="POST">
-
-<!-- Ключ доступа прямо в HTML -->
+<form id="rsvpForm" action="https://api.web3forms.com/submit" method="POST">
 <input type="hidden" name="access_key" value="c14e7dba-2ca8-4f21-958f-d7472bb31426">
 <input type="hidden" name="redirect" id="redirect_field" value="thanks.html">
 
-<label for="name">Ваше имя и фамилия *</label>
+<label for="name" class="group-title">Ваше имя и фамилия *</label>
 <input type="text" id="name" name="name" required>
 
-<p class="group-title">Вы сможете присутствовать?</p>
-
-<input class="att-radio" type="radio" name="attendance" id="att-yes" value="yes" required onchange="setRedirect('yes')">
-<label class="att-label" for="att-yes"><span>Да, мы будем!</span></label><br>
-
-<input class="att-radio" type="radio" name="attendance" id="att-rest" value="restaurant" onchange="setRedirect('yes')">
-<label class="att-label" for="att-rest"><span>Да, мы будем, но только к ресторану!</span></label><br>
-
-<input class="att-radio" type="radio" name="attendance" id="att-no" value="no" onchange="setRedirect('no')">
-<label class="att-label" for="att-no"><span>К сожалению, нет.</span></label>
+<div class="radio-group">
+<label class="group-title">Вы сможете присутствовать?</label>
+<div class="checkbox-item"><input type="radio" name="attendance" id="att-yes" value="yes" onclick="setRedirect('yes')" required><span>Да, мы будем!</span></div>
+<div class="checkbox-item"><input type="radio" name="attendance" id="att-rest" value="restaurant" onclick="setRedirect('yes')"><span>Да, мы будем, но только к ресторану!</span></div>
+<div class="checkbox-item"><input type="radio" name="attendance" id="att-no" value="no" onclick="setRedirect('no')"><span>К сожалению, нет.</span></div>
+</div>
 
 <!-- Поля для тех, кто НЕ может прийти -->
-<div id="no-field" class="radio-group">
-<label>Напишите пару теплых слов:</label>
+<div id="no-field">
+<label class="group-title">Напишите пару теплых слов:</label>
 <textarea name="message" rows="3"></textarea>
 </div>
 
 <!-- Дополнительные вопросы для тех, кто ПРИДЕТ -->
-<div id="extra-fields" class="radio-group">
+<div id="extra-fields">
 
-<p class="group-title">Выберите горячее блюдо:</p>
-<label class="checkbox-item"><input type="radio" name="food" value="salmon"><span>Морской окунь с картофельным пюре и соусом из печёного перца</span></label>
-<label class="checkbox-item"><input type="radio" name="food" value="duck"><span>Куриный шашлык с печёными овощами и томатным соусом</span></label>
+<label class="group-title">Выберите горячее блюдо:</label>
+<div class="checkbox-item"><input type="radio" name="food" value="salmon"><span>Морской окунь с картофельным пюре и соусом из печёного перца</span></div>
+<div class="checkbox-item"><input type="radio" name="food" value="duck"><span>Куриный шашлык с печёными овощами и томатным соусом</span></div>
 
-<p class="group-title">Будете ли Вы с детьми?</p>
-<input class="att-radio" type="radio" name="withKids" id="kids-yes" value="yes">
-<label class="att-label" for="kids-yes"><span>Да</span></label><br>
-<input class="att-radio" type="radio" name="withKids" id="kids-no" value="no" checked>
-<label class="att-label" for="kids-no"><span>Нет</span></label>
+<!-- ВОПРОС ПРО ДЕТЕЙ -->
+<div class="radio-group">
+<label class="group-title">Будете ли Вы с детьми?</label>
+<div class="checkbox-item"><input type="radio" name="withKids" id="kids-yes" value="yes"><span>Да</span></div>
+<div class="checkbox-item"><input type="radio" name="withKids" id="kids-no" value="no" checked><span>Нет</span></div>
+</div>
 
 <!-- ДЕТСКОЕ МЕНЮ -->
-<div id="kids-menu-section" class="radio-group">
-<label>Детское меню</label>
+<div id="kids-menu-section">
+<label class="group-title">Детское меню</label>
 <div class="form-hint">(Можно выбрать несколько вариантов)</div>
 <label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="olivier"><span>Оливье с курицей</span></label>
 <label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="soup"><span>Детский куриный бульон</span></label>
@@ -126,9 +89,7 @@ font-family: 'Playfair Display', serif;
 <label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="nuggets"><span>Наггетсы с картофелем фри</span></label>
 </div>
 
-<hr class="section-divider">
-
-<p class="group-title">Какой алкоголь вы предпочитаете?</p>
+<label class="group-title">Какой алкоголь вы предпочитаете?</label>
 <div class="form-hint">(Можно выбрать несколько вариантов)</div>
 <label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="whiskey"><span>Виски</span></label>
 <label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="vodka"><span>Водка</span></label>
@@ -137,27 +98,19 @@ font-family: 'Playfair Display', serif;
 <label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="champagne"><span>Шампанское</span></label>
 <label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="noAlco"><span>Я не пью алкоголь</span></label>
 
-<!-- ПРИМЕЧАНИЕ ПРО ЦВЕТЫ -->
 <div class="note-box">
 <strong>Маленькое пожелание</strong>
 Уважаемые гости, мы просим Вас воздержаться от покупки цветочных букетов. По одному букету могут подарить только семья жениха и/или невесты, спасибо! :)
 </div>
-
-</div> <!-- Конец extra-fields -->
+</div> <!-- конец extra-fields -->
 
 <button type="submit" class="submit-btn">Отправить ответ</button>
 </form>
 </div>
 
 <script>
-// Бонус: выбираем правильную страницу после отправки.
 function setRedirect(attendance) {
-var field = document.getElementById('redirect_field');
-if (attendance === 'no') {
-field.value = 'wish.html';
-} else {
-field.value = 'thanks.html';
-}
+document.getElementById('redirect_field').value = (attendance === 'no') ? 'wish.html' : 'thanks.html';
 }
 </script>
 
