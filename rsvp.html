@@ -8,23 +8,29 @@
 <style>
 body { font-family: 'Montserrat', sans-serif; background-color: #fdfaf6; color: #4a4a4a; padding: 40px 20px; }
 .form-card { max-width: 500px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-h2 { font-family: 'Playfair Display', serif; text-align: center; color: #d4af37; }
+h2 { font-family: 'Playfair Display', serif; text-align: center; color: #d4af37; margin-top: 0; }
 label { display: block; margin-top: 20px; margin-bottom: 5px; font-weight: bold; }
-input[type="text"], input[type="email"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
-.radio-group { margin: 20px 0; }
+input[type="text"], textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+
+.radio-group { margin: 10px 0; }
 .hidden { display: none; }
 
-/* Общий вид чекбоксов и радиокнопок, синий цвет выбора [i]/
-.checkbox-item { margin: 10px 0; display: flex; align-items: center; cursor: pointer; user-select: none; }
-.checkbox-item input {
-margin-right: 12px;
-width: 20px;
-height: 20px;
-cursor: pointer;
-accent-color: #007bff;
-}
+/* Синие кружки/галочки выбора [i]/
+input[type="radio"], input[type="checkbox"] { accent-color: #007bff; }
+.att-radio { width: 20px; height: 20px; margin: 12px 8px 12px 0; vertical-align: middle; }
+.att-label { cursor: pointer; margin: 12px 0; }
+.group-title { font-weight: bold; margin: 22px 0 8px; color: #4a4a4a; }
 
-/[/i] Кнопка отправки — золотая, на всю ширину */
+/[/i] Показ вопросов на чистом CSS — не требует скрипта */
+#no-field, #extra-fields, #kids-menu-section { display: none; }
+#att-no:checked ~ #no-field { display: block; }
+#att-yes:checked ~ #extra-fields,
+#att-rest:checked ~ #extra-fields { display: block; }
+#kids-yes:checked ~ #kids-menu-section { display: block; }
+
+.checkbox-item { margin: 10px 0; display: flex; align-items: center; cursor: pointer; user-select: none; }
+.checkbox-item input { margin-right: 12px; width: 20px; height: 20px; cursor: pointer; }
+
 .submit-btn {
 width: 100%;
 padding: 15px;
@@ -65,40 +71,47 @@ font-family: 'Playfair Display', serif;
 <div class="form-card">
 <h2>Ваш ответ</h2>
 
-<form id="rsvpForm" action="https://api.web3forms.com/submit" method="POST" onsubmit="return handleSubmit(event)">
+<form action="https://api.web3forms.com/submit" method="POST">
+
+<!-- Ключ доступа прямо в HTML: без него web3forms отклонит форму -->
+<input type="hidden" name="access_key" value="c14e7dba-2ca8-4f21-958f-d7472bb31426">
+<input type="hidden" name="redirect" id="redirect_field" value="thanks.html">
 
 <label for="name">Ваше имя и фамилия *</label>
 <input type="text" id="name" name="name" required>
 
-<div class="radio-group">
-<label>Вы сможете присутствовать?</label>
-<div class="checkbox-item"><input type="radio" name="attendance" value="yes" onclick="toggleExtra(true)" required><span>Да, мы будем!</span></div>
-<div class="checkbox-item"><input type="radio" name="attendance" value="restaurant" onclick="toggleExtra(true)" required><span>Да, мы будем, но только к ресторану!</span></div>
-<div class="checkbox-item"><input type="radio" name="attendance" value="no" onclick="toggleExtra(false)"><span>К сожалению, нет.</span></div>
-</div>
+<p class="group-title">Вы сможете присутствовать?</p>
+
+<input class="att-radio" type="radio" name="attendance" id="att-yes" value="yes" required onchange="setRedirect('yes')">
+<label class="att-label" for="att-yes"><span>Да, мы будем!</span></label><br>
+
+<input class="att-radio" type="radio" name="attendance" id="att-rest" value="restaurant" onchange="setRedirect('yes')">
+<label class="att-label" for="att-rest"><span>Да, мы будем, но только к ресторану!</span></label><br>
+
+<input class="att-radio" type="radio" name="attendance" id="att-no" value="no" onchange="setRedirect('no')">
+<label class="att-label" for="att-no"><span>К сожалению, нет.</span></label>
 
 <!-- Поля для тех, кто НЕ может прийти -->
-<div id="no-field" class="hidden">
+<div id="no-field" class="radio-group">
 <label>Напишите пару теплых слов:</label>
 <textarea name="message" rows="3"></textarea>
 </div>
 
 <!-- Дополнительные вопросы для тех, кто ПРИДЕТ -->
-<div id="extra-fields" class="hidden">
+<div id="extra-fields" class="radio-group">
 
-<label>Выберите горячее блюдо:</label>
-<div class="checkbox-item"><input type="radio" name="food" value="salmon"><span>Морской окунь с картофельным пюре и соусом из печёного перца</span></div>
-<div class="checkbox-item"><input type="radio" name="food" value="duck"><span>Куриный шашлык с печёными овощами и томатным соусом</span></div>
+<p class="group-title">Выберите горячее блюдо:</p>
+<label class="checkbox-item"><input type="radio" name="food" value="salmon"><span>Морской окунь с картофельным пюре и соусом из печёного перца</span></label>
+<label class="checkbox-item"><input type="radio" name="food" value="duck"><span>Куриный шашлык с печёными овощами и томатным соусом</span></label>
 
-<!-- ВОПРОС ПРО ДЕТЕЙ -->
-<div class="radio-group">
-<label>Будете ли Вы с детьми?</label>
-<div class="checkbox-item"><input type="radio" name="withKids" value="yes" onclick="toggleKids(true)"><span>Да</span></div>
-<div class="checkbox-item"><input type="radio" name="withKids" value="no" onclick="toggleKids(false)" checked><span>Нет</span></div>
-</div>
+<p class="group-title">Будете ли Вы с детьми?</p>
+<input class="att-radio" type="radio" name="withKids" id="kids-yes" value="yes">
+<label class="att-label" for="kids-yes"><span>Да</span></label><br>
+<input class="att-radio" type="radio" name="withKids" id="kids-no" value="no" checked>
+<label class="att-label" for="kids-no"><span>Нет</span></label>
 
 <!-- ДЕТСКОЕ МЕНЮ -->
-<div id="kids-menu-section" class="hidden">
+<div id="kids-menu-section" class="radio-group">
 <label>Детское меню</label>
 <div class="form-hint">(Можно выбрать несколько вариантов)</div>
 <label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="olivier"><span>Оливье с курицей</span></label>
@@ -110,9 +123,9 @@ font-family: 'Playfair Display', serif;
 <label class="checkbox-item"><input type="checkbox" name="kidsFood[]" value="nuggets"><span>Наггетсы с картофелем фри</span></label>
 </div>
 
-<div class="section-divider"></div>
+<hr class="section-divider">
 
-<label>Какой алкоголь вы предпочитаете?</label>
+<p class="group-title">Какой алкоголь вы предпочитаете?</p>
 <div class="form-hint">(Можно выбрать несколько вариантов)</div>
 <label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="whiskey"><span>Виски</span></label>
 <label class="checkbox-item"><input type="checkbox" name="alcohol[]" value="vodka"><span>Водка</span></label>
@@ -126,6 +139,7 @@ font-family: 'Playfair Display', serif;
 <strong>Маленькое пожелание</strong>
 Уважаемые гости, мы просим Вас воздержаться от покупки цветочных букетов. По одному букету могут подарить только семья жениха и/или невесты, спасибо! :)
 </div>
+
 </div> <!-- Конец extra-fields -->
 
 <button type="submit" class="submit-btn">Отправить ответ</button>
@@ -133,75 +147,15 @@ font-family: 'Playfair Display', serif;
 </div>
 
 <script>
-function toggleExtra(isPresent) {
-var extra = document.getElementById('extra-fields');
-var no = document.getElementById('no-field');
-if (isPresent) {
-extra.classList.remove('hidden');
-no.classList.add('hidden');
-} else {
-extra.classList.add('hidden');
-no.classList.remove('hidden');
-}
-}
-
-function toggleKids(hasKids) {
-var kids = document.getElementById('kids-menu-section');
-if (hasKids) {
-kids.classList.remove('hidden');
-} else {
-kids.classList.add('hidden');
-}
-}
-
-function handleSubmit(event) {
-if (event && event.preventDefault) event.preventDefault();
-
-var form = document.getElementById('rsvpForm');
-var formData = new FormData(form);
-var attendance = formData.get('attendance');
-
-// Собираем все поля формы в один объект (поля с [] превращаем в списки)
-var data = {};
-formData.forEach(function (value, key) {
-if (key.indexOf('[]', key.length - 2) !== -1) {
-var clean = key.slice(0, -2);
-if (!data[clean]) data[clean] = [];
-data[clean].push(value);
-} else {
-data[key] = value;
-}
-});
-
-// Служебные параметры web3forms
-data.access_key = 'c14e7dba-2ca8-4f21-958f-d7472bb31426';
-data.subject = 'Новый ответ на приглашение (RSVP)';
-
-// Отправляем через XMLHttpRequest (работает везде)
-var xhr = new XMLHttpRequest();
-xhr.open('POST', '[url=https://api.web3forms.com/submit]https://api.web3forms.com/submit[/url] true);
-xhr.setRequestHeader('Content-Type', 'application/json');
-xhr.onreadystatechange = function () {
-if (xhr.readyState === 4) {
-try {
-var result = JSON.parse(xhr.responseText);
-if (result && result.success) {
+// Бонус: выбираем правильную страницу после отправки.
+// Если этот скрипт вдруг не выполнится — всё равно покажется thanks.html, и письмо уйдёт.
+function setRedirect(attendance) {
+var field = document.getElementById('redirect_field');
 if (attendance === 'no') {
-window.location.href = 'wish.html';
+field.value = 'wish.html';
 } else {
-window.location.href = 'thanks.html';
+field.value = 'thanks.html';
 }
-} else {
-alert('Не удалось отправить ответ. Попробуйте ещё раз.');
-}
-} catch (e) {
-alert('Ошибка отправки. Попробуйте ещё раз.');
-}
-}
-};
-xhr.send(JSON.stringify(data));
-
-return false;
 }
 </script>
 
