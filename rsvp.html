@@ -22,39 +22,39 @@ input[type="text"], input[type="email"], textarea, select { width: 100%; padding
 
 /* Единый размер кружков и квадратиков на всех устройствах */
 .checkbox-item input {
-  margin-right: 12px;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  border: 2px solid #b0a89a;
-  background-color: #fff;
-  position: relative;
-  flex-shrink: 0;
+margin-right: 12px;
+width: 20px;
+height: 20px;
+cursor: pointer;
+-webkit-appearance: none;
+appearance: none;
+border: 2px solid #b0a89a;
+background-color: #fff;
+position: relative;
+flex-shrink: 0;
 }
 .checkbox-item input[type="radio"] { border-radius: 50%; }
 .checkbox-item input[type="checkbox"] { border-radius: 4px; }
 .checkbox-item input:checked { border-color: #007bff; }
 .checkbox-item input[type="radio"]:checked { background-color: #007bff; }
 .checkbox-item input[type="radio"]:checked::after {
-  content: '';
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: #fff;
-  transform: translate(-50%, -50%);
+content: '';
+position: absolute;
+left: 50%; top: 50%;
+width: 8px; height: 8px;
+border-radius: 50%;
+background: #fff;
+transform: translate(-50%, -50%);
 }
 .checkbox-item input[type="checkbox"]:checked { background-color: #007bff; }
 .checkbox-item input[type="checkbox"]:checked::after {
-  content: '';
-  position: absolute;
-  left: 4px; top: 1px;
-  width: 8px; height: 13px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+content: '';
+position: absolute;
+left: 4px; top: 1px;
+width: 8px; height: 13px;
+border: solid #fff;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
 }
 
 .submit-btn { width: 100%; padding: 15px; background-color: #d4af37; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; margin-top: 30px; }
@@ -79,8 +79,8 @@ input[type="text"], input[type="email"], textarea, select { width: 100%; padding
 <h2>Ваш ответ</h2>
 <form id="rsvpForm" action="https://api.web3forms.com/submit" method="POST">
 <input type="hidden" name="access_key" value="c14e7dba-2ca8-4f21-958f-d7472bb31426">
-<input type="hidden" name="subject" value="Свадебное приглашение">
-<input type="hidden" name="from_name" value="Ответ от {Имя и фамилия}">
+<input type="hidden" name="_subject" id="subject_field" value="Ответ от гостя">
+<input type="hidden" name="from_name" value="Свадебное приглашение">
 <input type="hidden" name="redirect" id="redirect_field" value="thanks.html">
 
 <label for="name" class="group-title">Ваше имя и фамилия *</label>
@@ -88,9 +88,9 @@ input[type="text"], input[type="email"], textarea, select { width: 100%; padding
 
 <div class="radio-group">
 <label class="group-title">Вы сможете присутствовать?</label>
-<div class="checkbox-item"><input type="radio" name="Присутствие" id="att-yes" value="Да, я буду!" onclick="setRedirect('yes')" required><span>Да, я буду!</span></div>
-<div class="checkbox-item"><input type="radio" name="Присутствие" id="att-rest" value="Да, я буду, но только к ресторану" onclick="setRedirect('yes')"><span>Да, я буду, но только к ресторану!</span></div>
-<div class="checkbox-item"><input type="radio" name="Присутствие" id="att-no" value="К сожалению, нет" onclick="setRedirect('no')"><span>К сожалению, нет.</span></div>
+<div class="checkbox-item"><input type="radio" name="Присутствие" id="att-yes" value="Да, мы будем!" onclick="setRedirect('yes')" required><span>Да, мы будем!</span></div>
+<div class="checkbox-item"><input type="radio" name="Присутствие" id="att-rest" value="Да, будем, но только к ресторану" onclick="setRedirect('yes')"><span>Да, мы будем, но только к ресторану!</span></div>
+<div class="checkbox-item"><input type="radio" name="Присутствие" id="att-no" value="К сожалению, не сможем" onclick="setRedirect('no')"><span>К сожалению, нет.</span></div>
 </div>
 
 <!-- Поля для тех, кто НЕ может прийти -->
@@ -147,26 +147,32 @@ input[type="text"], input[type="email"], textarea, select { width: 100%; padding
 
 <script>
 function pageBase() {
-  var href = window.location.href;
-  return href.substring(0, href.lastIndexOf('/') + 1);
+var href = window.location.href;
+return href.substring(0, href.lastIndexOf('/') + 1);
 }
 function setRedirect(attendance) {
-  document.getElementById('redirect_field').value = pageBase() + (attendance === 'no' ? 'wish.html' : 'thanks.html');
+document.getElementById('redirect_field').value = pageBase() + (attendance === 'no' ? 'wish.html' : 'thanks.html');
 }
 window.addEventListener('load', function () {
-  // абсолютный адрес по умолчанию, чтобы редирект работал даже если не кликали по вариантам
-  document.getElementById('redirect_field').value = pageBase() + 'thanks.html';
+// абсолютный адрес по умолчанию, чтобы редирект работал даже если не кликали по вариантам
+document.getElementById('redirect_field').value = pageBase() + 'thanks.html';
 
-  // чтобы в письме не было пустых полей от скрытых блоков
-  function syncDisabled() {
-    var isNo = document.getElementById('att-no').checked;
-    var extras = document.querySelectorAll('#extra-fields input');
-    for (var i = 0; i < extras.length; i++) extras[i].disabled = isNo;
-    document.getElementById('no-message').disabled = !isNo;
-  }
-  var att = document.querySelectorAll('input[name="Присутствие"]');
-  for (var j = 0; j < att.length; j++) att[j].addEventListener('change', syncDisabled);
-  syncDisabled();
+// чтобы в письме не было пустых полей от скрытых блоков
+function syncDisabled() {
+var isNo = document.getElementById('att-no').checked;
+var extras = document.querySelectorAll('#extra-fields input');
+for (var i = 0; i < extras.length; i++) extras[i].disabled = isNo;
+document.getElementById('no-message').disabled = !isNo;
+}
+var att = document.querySelectorAll('input[name="Присутствие"]');
+for (var j = 0; j < att.length; j++) att[j].addEventListener('change', syncDisabled);
+syncDisabled();
+
+// тема письма: "Ответ от <имя гостя>"
+document.getElementById('rsvpForm').addEventListener('submit', function () {
+var name = (document.getElementById('name').value || '').trim();
+document.getElementById('subject_field').value = 'Ответ от ' + (name || 'гостя');
+});
 });
 </script>
 
