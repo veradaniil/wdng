@@ -10,7 +10,6 @@ body { font-family: 'Montserrat', sans-serif; background-color: #fdfaf6; color: 
 .form-card { max-width: 500px; margin: auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 h2 { font-family: 'Playfair Display', serif; text-align: center; color: #d4af37; }
 
-/* ВОПРОСЫ — ЖИРНЫЕ, варианты — ОБЫЧНЫЕ (с !important) */
 label { display: block; margin-top: 12px; margin-bottom: 5px; font-weight: 400 !important; }
 .group-title { font-weight: 700 !important; margin-top: 20px; }
 .checkbox-item { margin: 8px 0; display: flex; align-items: center; cursor: pointer; user-select: none; font-weight: 400 !important; }
@@ -20,7 +19,6 @@ input[type="text"], input[type="email"], textarea, select { width: 100%; padding
 .radio-group { margin: 20px 0; }
 .hidden { display: none; }
 
-/* Единый размер кружков и квадратиков на всех устройствах */
 .checkbox-item input {
 margin-right: 12px;
 width: 20px;
@@ -65,7 +63,6 @@ transform: rotate(45deg);
 .note-box { margin-top: 30px; padding: 20px; background-color: #fdf8ed; border-left: 4px solid #d4af37; border-radius: 8px; font-size: 0.9em; line-height: 1.5; text-align: left; color: #666; }
 .note-box strong { display: block; color: #d4af37; margin-bottom: 5px; font-family: 'Playfair Display', serif; }
 
-/* ПОКАЗ/СКРЫТИЕ БЛОКОВ — чистый CSS, без JS */
 #no-field, #extra-fields, #kids-menu-section { display: none; }
 #rsvpForm:has(#att-no:checked) #no-field { display: block; }
 #rsvpForm:has(#att-yes:checked) #extra-fields,
@@ -79,7 +76,7 @@ transform: rotate(45deg);
 <h2>Ваш ответ</h2>
 <form id="rsvpForm" action="https://api.web3forms.com/submit" method="POST">
 <input type="hidden" name="access_key" value="c14e7dba-2ca8-4f21-958f-d7472bb31426">
-<input type="hidden" name="_subject" id="subject_field" value="Ответ от гостя">
+<input type="hidden" name="subject" id="subject_field" value="Ответ гостя на свадебном сайте">
 <input type="hidden" name="from_name" value="Свадебное приглашение">
 <input type="hidden" name="redirect" id="redirect_field" value="thanks.html">
 
@@ -93,27 +90,23 @@ transform: rotate(45deg);
 <div class="checkbox-item"><input type="radio" name="Присутствие" id="att-no" value="К сожалению, нет" onclick="setRedirect('no')"><span>К сожалению, нет.</span></div>
 </div>
 
-<!-- Поля для тех, кто НЕ может прийти -->
 <div id="no-field">
 <label class="group-title">Напишите пару теплых слов:</label>
 <textarea id="no-message" name="Тёплые слова" rows="3"></textarea>
 </div>
 
-<!-- Дополнительные вопросы для тех, кто ПРИДЕТ -->
 <div id="extra-fields">
 
 <label class="group-title">Выберите горячее блюдо:</label>
 <div class="checkbox-item"><input type="radio" name="Горячее блюдо" value="Морской окунь с картофельным пюре и соусом из печёного перца"><span>Морской окунь с картофельным пюре и соусом из печёного перца</span></div>
 <div class="checkbox-item"><input type="radio" name="Горячее блюдо" value="Куриный шашлык с печёными овощами и томатным соусом"><span>Куриный шашлык с печёными овощами и томатным соусом</span></div>
 
-<!-- ВОПРОС ПРО ДЕТЕЙ -->
 <div class="radio-group">
 <label class="group-title">Будете ли Вы с детьми?</label>
 <div class="checkbox-item"><input type="radio" name="Будете с детьми" id="kids-yes" value="Да"><span>Да</span></div>
 <div class="checkbox-item"><input type="radio" name="Будете с детьми" id="kids-no" value="Нет" checked><span>Нет</span></div>
 </div>
 
-<!-- ДЕТСКОЕ МЕНЮ -->
 <div id="kids-menu-section">
 <label class="group-title">Детское меню</label>
 <div class="form-hint">(Можно выбрать несколько вариантов)</div>
@@ -139,7 +132,7 @@ transform: rotate(45deg);
 <strong>Маленькое пожелание</strong>
 Уважаемые гости, мы просим Вас воздержаться от покупки цветочных букетов. По одному букету могут подарить только семья жениха и/или невесты, спасибо! :)
 </div>
-</div> <!-- конец extra-fields -->
+</div>
 
 <button type="submit" class="submit-btn">Отправить ответ</button>
 </form>
@@ -154,10 +147,8 @@ function setRedirect(attendance) {
 document.getElementById('redirect_field').value = pageBase() + (attendance === 'no' ? 'wish.html' : 'thanks.html');
 }
 window.addEventListener('load', function () {
-// абсолютный адрес по умолчанию, чтобы редирект работал даже если не кликали по вариантам
 document.getElementById('redirect_field').value = pageBase() + 'thanks.html';
 
-// чтобы в письме не было пустых полей от скрытых блоков
 function syncDisabled() {
 var isNo = document.getElementById('att-no').checked;
 var extras = document.querySelectorAll('#extra-fields input');
@@ -168,11 +159,14 @@ var att = document.querySelectorAll('input[name="Присутствие"]');
 for (var j = 0; j < att.length; j++) att[j].addEventListener('change', syncDisabled);
 syncDisabled();
 
-// тема письма: "Ответ от <имя гостя>"
-document.getElementById('rsvpForm').addEventListener('submit', function () {
-var name = (document.getElementById('name').value || '').trim();
-document.getElementById('subject_field').value = 'Ответ от ' + (name || 'гостя');
-});
+var subjectField = document.getElementById('subject_field');
+var nameInput = document.getElementById('name');
+function updateSubject() {
+var name = nameInput.value.trim();
+subjectField.value = 'Ответ от ' + (name || 'гостя');
+}
+nameInput.addEventListener('input', updateSubject);
+document.getElementById('rsvpForm').addEventListener('submit', updateSubject);
 });
 </script>
 
